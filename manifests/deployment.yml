@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html
+          configMap:
+            name: hello-world-html
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-world-html
+data:
+  index.html: |
+    <html>
+      <body style="text-align:center;margin-top:40px;">
+        <h1>Hello World 🌍</h1>
+        <p>Served from Nginx running on K3s!</p>
+      </body>
+    </html>
